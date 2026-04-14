@@ -17,7 +17,12 @@ type readArg struct {
 }
 
 // Payload does encode or decode to payload protocol.
+// Note: int64 fields must be at the top of the struct for 64-bit alignment on 32-bit systems (ARM).
 type Payload struct {
+	// 64-bit atomic fields must be first for proper alignment on 32-bit architectures
+	feeding  int64
+	flushing int64
+
 	close     chan struct{}
 	closeOnce sync.Once
 	err       atomic.Value
@@ -25,13 +30,11 @@ type Payload struct {
 	pauser *pauser
 
 	readerChan   chan readArg
-	feeding      int64
 	readError    chan error
 	readDeadline atomic.Value
 	decoder      decoder
 
 	writerChan    chan io.Writer
-	flushing      int64
 	writeError    chan error
 	writeDeadline atomic.Value
 	encoder       encoder

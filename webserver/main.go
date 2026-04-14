@@ -7,5 +7,8 @@ import (
 
 func main() {
 	router := route.Router()
-	router.RunTLS(config.WebServerHostTLS, "ssl/server.crt", "ssl/server.key")
+
+	// 从嵌入的文件系统中获取证书
+	certFile, keyFile := route.GetCertFiles()
+	router.RunTLS(config.WebServerHostTLS, certFile, keyFile)
 }

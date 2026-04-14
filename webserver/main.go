@@ -6,9 +6,12 @@ import (
 )
 
 func main() {
+	// 解析命令行参数
+	config.ParseFlags()
+
 	router := route.Router()
 
-	// 从嵌入的文件系统中获取证书
+	// 获取证书文件路径（优先使用命令行参数指定的路径）
 	certFile, keyFile := route.GetCertFiles()
 	router.RunTLS(config.WebServerHostTLS, certFile, keyFile)
 }

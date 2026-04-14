@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"WebRTCDemo/assets"
+	"WebRTCDemo/config"
 	"WebRTCDemo/webserver/handler"
 
 	"github.com/gin-gonic/gin"
@@ -43,11 +44,18 @@ func Router() *gin.Engine {
 	return router
 }
 
-// GetCertFiles 提取嵌入的证书文件到临时目录并返回路径
+// GetCertFiles 获取证书文件路径
+// 如果通过命令行参数指定了证书路径，则使用指定路径
+// 否则从嵌入的文件系统中提取证书到临时目录
 func GetCertFiles() (certPath string, keyPath string) {
 	// 如果已经提取过，直接返回
 	if certFiles.Cert != "" && certFiles.Key != "" {
 		return certFiles.Cert, certFiles.Key
+	}
+
+	// 如果通过命令行参数指定了证书路径，直接使用
+	if config.CertFile != "" && config.KeyFile != "" {
+		return config.CertFile, config.KeyFile
 	}
 
 	// 创建临时目录
